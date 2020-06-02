@@ -140,6 +140,8 @@
             </aside>
 
             <div class="content-wrapper">
+                {{ include('@EasyAdmin/default/includes/_add_modal.html.twig') }}
+
                 {% block flash_messages %}
                     {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
                 {% endblock flash_messages %}

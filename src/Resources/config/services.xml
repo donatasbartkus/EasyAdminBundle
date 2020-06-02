@@ -50,6 +50,7 @@
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
             <argument type="service" id="easyadmin.router" />
+            <argument type="service" id="request_stack" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />

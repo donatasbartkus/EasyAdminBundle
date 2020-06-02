@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Exception\MissingResourceException;
@@ -33,8 +34,10 @@ class EasyAdminTwigExtension extends AbstractExtension
     /** @var TranslatorInterface|null */
     private $translator;
     private $authorizationChecker;
+    /** @var \Symfony\Component\HttpFoundation\Request|null  */
+    private $request;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug, ?LogoutUrlGenerator $logoutUrlGenerator, $translator, AuthorizationChecker $authorizationChecker)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug, ?LogoutUrlGenerator $logoutUrlGenerator, $translator, AuthorizationChecker $authorizationChecker, RequestStack $requestStack)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -43,6 +46,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
         $this->authorizationChecker = $authorizationChecker;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     /**
@@ -63,6 +67,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
             new TwigFunction('easyadmin_read_property', [$this, 'readProperty']),
             new TwigFunction('easyadmin_is_granted', [$this, 'isGranted']),
+            new TwigFunction('easyadmin_is_ajax_call', [$this, 'isAjaxCall']),
         ];
     }
 
@@ -503,5 +508,10 @@ class EasyAdminTwigExtension extends AbstractExtension
         } catch (MissingResourceException $e) {
             return null;
         }
+    }
+
+    public function isAjaxCall()
+    {
+        return $this->request->isXmlHttpRequest();
     }
 }

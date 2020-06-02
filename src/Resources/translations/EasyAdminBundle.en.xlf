@@ -171,6 +171,10 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
             </trans-unit>
+            <trans-unit id="form.ajax_error">
+                <source>form.ajax_error</source>
+                <target>An error occurred when sending the data.</target>
+            </trans-unit>
 
             <!-- Exceptions -->
             <trans-unit id="exception.entity_not_found">

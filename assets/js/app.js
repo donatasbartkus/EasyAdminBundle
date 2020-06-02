@@ -21,6 +21,7 @@ window.addEventListener('load', function() {
     createCodeEditorFields();
     createTextEditorFields();
     createFileUploadFields();
+    inlineAddModal();
 });
 
 function createNullableControls() {
@@ -230,4 +231,52 @@ function createFileUploadFields()
         container.find('.fileupload-list').hide();
         $(this).hide();
     });
+}
+
+function inlineAddModal() {
+    var modal = document.getElementById('#addModal');
+    var modalBody = modal.querySelectorAll('.modal-body');
+
+    if (0 < modal.length) {
+        $('.btn-modal').on('click', function (e) {
+            var button = $(e.currentTarget);
+            var href = button.data('href');
+
+            button.attr('disabled', 'disabled');
+
+            modalBody.load(href + ' .content', function () {
+                modal.modal('show');
+                button.removeAttr('disabled');
+            });
+        });
+
+        modal.on('submit', 'form', function (e) {
+            e.preventDefault();
+
+            var form = $(e.currentTarget);
+            var submitBtn = form.find('button[type=submit]');
+
+            submitBtn.attr('disabled', 'disabled');
+
+            var send = $.ajax({
+                method: 'POST',
+                url: form.attr('action'),
+                data: form.serialize(),
+            });
+
+            send.done(function () {
+                modal.modal('hide');
+            });
+
+            send.fail(function () {
+                var error = $('<div class="alert alert-danger" role="alert">' + modal.data('error') + '</div>');
+                console.log(error);
+                modalBody.prepend(error);
+            });
+
+            send.always(function () {
+                submitBtn.removeAttr('disabled');
+            });
+        });
+    }
 }
